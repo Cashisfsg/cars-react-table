@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ChangeEventHandler } from "react";
 import {
     getCoreRowModel,
     getFilteredRowModel,
@@ -6,24 +6,20 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 
-import {
-    Search,
-    Selector,
-    useInput,
-    Paginator,
-    PageNavigation,
-} from "../../../shared";
+import { Selector, Paginator, PageNavigation } from "../../../shared";
 
 import { Car, CarsTable } from "../../../entitites/cars";
 
 interface TableProps {
     data: Car[];
     columns: any;
+    searchProps: {
+        value: string;
+        onChange: ChangeEventHandler<HTMLInputElement>;
+    };
 }
 
-export const Table: FC<TableProps> = ({ data, columns }) => {
-    const [inputProps] = useInput("");
-
+export const Table: FC<TableProps> = ({ data, columns, searchProps }) => {
     const table = useReactTable({
         data,
         columns,
@@ -31,16 +27,14 @@ export const Table: FC<TableProps> = ({ data, columns }) => {
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         state: {
-            globalFilter: inputProps.value,
+            globalFilter: searchProps.value,
         },
 
-        onGlobalFilterChange: inputProps.onChange,
+        onGlobalFilterChange: searchProps.onChange,
     });
 
     return (
         <>
-            <Search {...inputProps} />
-
             <CarsTable table={table} />
 
             <div className="flex w-full items-center justify-between py-5">

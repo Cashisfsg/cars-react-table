@@ -9,7 +9,7 @@ interface CarsTableProps {
 export const CarsTable: FC<CarsTableProps> = ({ table }) => {
     return (
         <table className="min-w-full text-center text-lg text-gray-500">
-            <thead className="min-w-full border-b-4 border-double border-b-gray-400 bg-gray-200 text-xl uppercase text-gray-700 ">
+            <thead className="min-w-full border-b-4 border-double border-b-gray-400 bg-gray-200 text-xl font-medium uppercase text-gray-700">
                 {table.getHeaderGroups().map((headerGroup) => (
                     <tr
                         key={headerGroup.id}

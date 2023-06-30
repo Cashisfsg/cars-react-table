@@ -32,7 +32,7 @@ export const PageNavigation: FC<PageNavigationProps> = ({
                             : 0;
                         goToPage(page);
                     }}
-                    className="w-16 rounded border px-2 py-1"
+                    className="w-16 rounded-md border-2 border-solid border-neutral-300 bg-transparent bg-clip-padding px-2 py-1 text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:border-blue-500 focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none"
                 />
             </span>
         </div>

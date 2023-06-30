@@ -1,4 +1,4 @@
-import { Provider } from "./app/providers/context";
+import { Provider } from "./app/providers";
 import { MainPage } from "./pages";
 import "./App.css";
 

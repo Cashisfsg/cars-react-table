@@ -1,13 +1,14 @@
 import { useState, useRef, useMemo, useContext, FormEventHandler } from "react";
 
 import { Table } from "../widgets";
-import { Modal, Button, useFetch } from "../shared";
+import { Modal, Search, useFetch, useInput } from "../shared";
 import { CreateNewCarForm, CreateOrEditDropDown } from "../features";
 import { Car } from "../entitites/cars";
 import { Context } from "../app/providers/context";
 
 export const MainPage = () => {
     const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+    const [searchProps] = useInput("");
 
     const { status } = useFetch<Car[]>("https://myfakeapi.com/api/cars/");
 
@@ -36,7 +37,10 @@ export const MainPage = () => {
             car_vin: car_vin.value,
             car_color: car_color.value,
             car_model_year: car_model_year.value,
-            price: price.value,
+            price: new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+            }).format(parseFloat(price.value.replace(/[$,]+/g, ""))),
             availability: availability.checked,
         };
 
@@ -105,25 +109,36 @@ export const MainPage = () => {
     const memoizedColumns = useMemo(() => columns, []);
 
     return (
-        <section className="scrollbar w-full">
-            <h1>React Table</h1>
+        <main className="w-full">
+            <h1 className="font-semibold">React Table</h1>
 
-            <Button
-                //@ts-ignore
-                onClick={() => {
-                    if (dialogRef.current) dialogRef.current.showModal();
-                }}
-            >
-                Click
-            </Button>
+            <div className="flex justify-between py-4 text-lg">
+                <button
+                    onClick={() => {
+                        if (dialogRef.current) dialogRef.current.showModal();
+                    }}
+                    className="justify-self-center rounded-lg bg-blue-500 px-4 py-2 font-semibold uppercase text-white transition-colors duration-150 active:bg-blue-700"
+                >
+                    Create new car
+                </button>
+
+                <Search {...searchProps} />
+            </div>
 
             {status === "fulfilled" && (
-                <Table data={memoizedCars} columns={memoizedColumns} />
+                <Table
+                    data={memoizedCars}
+                    columns={memoizedColumns}
+                    searchProps={searchProps}
+                />
             )}
 
-            <Modal title="Add new car" ref={dialogRef}>
+            <Modal
+                title={!!!selectedCar ? "Add new car" : "Edit car"}
+                ref={dialogRef}
+            >
                 <CreateNewCarForm car={selectedCar} onSubmit={onSubmit} />
             </Modal>
-        </section>
+        </main>
     );
 };
