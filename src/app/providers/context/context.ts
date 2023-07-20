@@ -13,7 +13,7 @@ export const Reducer = (state: any, action: any) => {
             return [
                 ...state.slice(0, selectedIndex),
                 action.payload,
-                ...state.slice(selectedIndex + 1),
+                ...state.slice(selectedIndex + 1)
             ];
         case "delete":
             return state.filter((e: any) => e.id !== action.payload);

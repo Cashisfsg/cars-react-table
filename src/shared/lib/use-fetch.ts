@@ -1,8 +1,7 @@
 import { useReducer, useEffect, useContext } from "react";
 import { Context } from "../../app/providers/context";
 
-interface State<T> {
-    data: undefined | T;
+interface State {
     status: "idle" | "pending" | "fulfilled" | "rejected";
     error: undefined | string;
 }
@@ -15,19 +14,22 @@ type Action<T> =
 export function useFetch<T = unknown>(
     query: string,
     requestOptions?: RequestInit
-): State<T> {
-    const initialState: State<T> = {
-        data: undefined,
+): State {
+    const initialState: State = {
         status: "idle",
-        error: undefined,
+        error: undefined
     };
 
-    const reducer = (state: State<T>, action: Action<T>): State<T> => {
+    //@ts-ignore
+    const { createNewCar } = useContext(Context);
+
+    const reducer = (state: State, action: Action<T>): State => {
         switch (action.type) {
             case "pending":
                 return { ...state, status: "pending" };
             case "fulfilled":
-                return { ...state, status: "fulfilled", data: action.payload };
+                createNewCar(action.payload);
+                return { ...state, status: "fulfilled" };
             case "rejected":
                 return { ...state, status: "rejected", error: action.payload };
 
@@ -38,18 +40,20 @@ export function useFetch<T = unknown>(
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    //@ts-ignore
-    const { createNewCar } = useContext(Context);
-
     useEffect(() => {
         if (!query) return;
 
         const controller = new AbortController();
+        const signal = controller.signal;
+
         (async () => {
             dispatch({ type: "pending" });
 
             try {
-                const response = await fetch(query, requestOptions);
+                const response = await fetch(query, {
+                    ...requestOptions,
+                    signal
+                });
 
                 if (response.status !== 200) {
                     throw new Error("Something went wrong");
@@ -57,11 +61,10 @@ export function useFetch<T = unknown>(
 
                 const data = await response.json();
                 dispatch({ type: "fulfilled", payload: data.cars });
-                createNewCar(data.cars);
             } catch (error: any) {
                 dispatch({
                     type: "rejected",
-                    payload: error.message as string,
+                    payload: error.message as string
                 });
             }
         })();

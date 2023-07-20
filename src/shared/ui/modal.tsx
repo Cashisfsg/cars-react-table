@@ -7,25 +7,13 @@ interface ModalProps {
     children: ReactNode;
 }
 
-export const Modal = forwardRef<unknown, ModalProps>(
+export const Modal = forwardRef<HTMLDialogElement, ModalProps>(
     ({ title, children, ...props }, ref) => {
         const dialogRef = useRef<HTMLDialogElement>(null);
 
         useImperativeHandle(
             ref,
-            () => {
-                return {
-                    show() {
-                        if (dialogRef.current) dialogRef.current.show();
-                    },
-                    showModal() {
-                        if (dialogRef.current) dialogRef.current.showModal();
-                    },
-                    close() {
-                        if (dialogRef.current) dialogRef.current.close();
-                    },
-                };
-            },
+            () => dialogRef.current as HTMLDialogElement,
             []
         );
 
