@@ -27,11 +27,11 @@ export const MainPage = () => {
     ) as ContextValue;
 
     const dialogRef = useRef<HTMLDialogElement>(null);
+    const formRef = useRef<HTMLFormElement>(null);
 
     const onSubmit: FormEventHandler<HTMLFormElement & FormData> = event => {
         event.preventDefault();
 
-        const formData = event.currentTarget;
         const {
             car,
             car_model,
@@ -40,7 +40,7 @@ export const MainPage = () => {
             car_model_year,
             price,
             availability
-        } = formData;
+        } = event.currentTarget;
 
         const updatedCar = {
             id: selectedCar?.id || cars.length + 1,
@@ -152,10 +152,14 @@ export const MainPage = () => {
             <Modal
                 title={!!!selectedCar ? "Add new car" : "Edit car"}
                 ref={dialogRef}
+                onClose={() => {
+                    if (formRef.current) formRef.current.reset();
+                }}
             >
                 <CreateNewCarForm
                     car={selectedCar}
                     onSubmit={onSubmit}
+                    ref={formRef}
                 />
             </Modal>
         </main>

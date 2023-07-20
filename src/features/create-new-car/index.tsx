@@ -1,4 +1,11 @@
-import { FC, FormEventHandler, useContext, useMemo } from "react";
+import {
+    FormEventHandler,
+    useContext,
+    useMemo,
+    useRef,
+    forwardRef,
+    useImperativeHandle
+} from "react";
 import { Context, ContextValue } from "../../app/providers";
 
 import { Car } from "../../entitites/cars";
@@ -48,13 +55,18 @@ interface CreateNewCarFormProps {
     onSubmit: FormEventHandler<HTMLFormElement>;
 }
 
-export const CreateNewCarForm: FC<CreateNewCarFormProps> = ({
-    car,
-    onSubmit
-}) => {
+export const CreateNewCarForm = forwardRef<
+    HTMLFormElement,
+    CreateNewCarFormProps
+>(({ car, onSubmit }, ref) => {
+    const formRef = useRef<HTMLFormElement>(null);
+
+    useImperativeHandle(ref, () => formRef.current as HTMLFormElement, []);
+
     return (
         <form
             onSubmit={onSubmit}
+            ref={formRef}
             className="m-auto grid max-w-md place-items-start gap-4 text-lg"
         >
             <label className="grid w-full place-items-start gap-2">
@@ -145,4 +157,4 @@ export const CreateNewCarForm: FC<CreateNewCarFormProps> = ({
             </button>
         </form>
     );
-};
+});
