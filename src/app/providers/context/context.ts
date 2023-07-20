@@ -1,6 +1,13 @@
-export const initialState = [];
+import { Car } from "../../../entitites/cars";
 
-export const Reducer = (state: any, action: any) => {
+type Action =
+    | { type: "create"; payload: Car[] | Car }
+    | { type: "update"; payload: Car }
+    | { type: "delete"; payload: number };
+
+export const initialState: Array<Car> = [];
+
+export function Reducer(state: Car[], action: Action): Car[] {
     switch (action.type) {
         case "create":
             if (Array.isArray(action.payload))
@@ -8,7 +15,7 @@ export const Reducer = (state: any, action: any) => {
             else return [...state, { ...action.payload, id: state.length + 1 }];
         case "update":
             const selectedIndex = state.findIndex(
-                (item: any) => item.id === action.payload.id
+                item => item.id === action.payload.id
             );
             return [
                 ...state.slice(0, selectedIndex),
@@ -16,8 +23,8 @@ export const Reducer = (state: any, action: any) => {
                 ...state.slice(selectedIndex + 1)
             ];
         case "delete":
-            return state.filter((e: any) => e.id !== action.payload);
+            return state.filter(e => e.id !== action.payload);
         default:
             return state;
     }
-};
+}

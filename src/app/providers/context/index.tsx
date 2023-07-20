@@ -1,25 +1,32 @@
 import React, { useReducer } from "react";
 import { initialState, Reducer } from "./context";
+import { Car } from "../../../entitites/cars";
 
-const Context = React.createContext(initialState);
+export interface ContextValue {
+    cars: Car[];
+    createNewCar: (cars: Car[] | Car) => void;
+    updateCar: (car: Car) => void;
+    deleteCar: (id: number) => void;
+}
 
-const Provider = ({ children }: { children: any }) => {
+const Context = React.createContext<ContextValue | null>(null);
+
+const Provider = ({ children }: { children: React.ReactNode }) => {
     const [state, dispatch] = useReducer(Reducer, initialState);
 
-    const value = {
+    const value: ContextValue = {
         cars: state,
-        createNewCar: (cars: any) => {
+        createNewCar: cars => {
             dispatch({ type: "create", payload: cars });
         },
-        updateCar: (car: any) => {
+        updateCar: car => {
             dispatch({ type: "update", payload: car });
         },
-        deleteCar: (id: any) => {
+        deleteCar: id => {
             dispatch({ type: "delete", payload: id });
-        },
+        }
     };
 
-    //@ts-ignore
     return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 

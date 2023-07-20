@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useContext } from "react";
-import { Context } from "../../app/providers/context";
+import { Context, ContextValue } from "../../app/providers/context";
+import { Car } from "../../entitites/cars";
 
 interface State {
     status: "idle" | "pending" | "fulfilled" | "rejected";
@@ -11,19 +12,15 @@ type Action<T> =
     | { type: "fulfilled"; payload: T }
     | { type: "rejected"; payload: string };
 
-export function useFetch<T = unknown>(
-    query: string,
-    requestOptions?: RequestInit
-): State {
+export function useFetch(query: string, requestOptions?: RequestInit): State {
     const initialState: State = {
         status: "idle",
         error: undefined
     };
 
-    //@ts-ignore
-    const { createNewCar } = useContext(Context);
+    const { createNewCar } = useContext(Context) as ContextValue;
 
-    const reducer = (state: State, action: Action<T>): State => {
+    const reducer = (state: State, action: Action<Car>): State => {
         switch (action.type) {
             case "pending":
                 return { ...state, status: "pending" };
@@ -61,10 +58,10 @@ export function useFetch<T = unknown>(
 
                 const data = await response.json();
                 dispatch({ type: "fulfilled", payload: data.cars });
-            } catch (error: any) {
+            } catch (error) {
                 dispatch({
                     type: "rejected",
-                    payload: error.message as string
+                    payload: (error as Error).message
                 });
             }
         })();

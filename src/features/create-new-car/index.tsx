@@ -8,13 +8,24 @@ interface CreateNewCarFormProps {
 
 export const CreateNewCarForm: FC<CreateNewCarFormProps> = ({
     car,
-    onSubmit,
+    onSubmit
 }) => {
     return (
         <form
             onSubmit={onSubmit}
             className="m-auto grid max-w-md place-items-start gap-4 text-lg"
         >
+            <label className="grid w-full place-items-start gap-2">
+                Company
+                <input
+                    type="text"
+                    name="car"
+                    defaultValue={car?.car || ""}
+                    readOnly={!!car}
+                    required
+                    className="w-full rounded-lg border-2 px-4 py-2"
+                />
+            </label>
             <label className="grid w-full place-items-start gap-2">
                 Model
                 <input
