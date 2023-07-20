@@ -1,4 +1,6 @@
-import { FC, FormEventHandler } from "react";
+import { FC, FormEventHandler, useContext, useMemo } from "react";
+import { Context, ContextValue } from "../../app/providers";
+
 import { Car } from "../../entitites/cars";
 
 interface CreateNewCarFormProps {
@@ -10,6 +12,23 @@ export const CreateNewCarForm: FC<CreateNewCarFormProps> = ({
     car,
     onSubmit
 }) => {
+    const { cars } = useContext(Context) as ContextValue;
+
+    const colorsList = useMemo(() => {
+        return (
+            <datalist id="colors-list">
+                {Array.from(new Set(cars.map(car => car.car_color))).map(
+                    color => (
+                        <option
+                            key={color}
+                            value={color}
+                        />
+                    )
+                )}
+            </datalist>
+        );
+    }, []);
+
     return (
         <form
             onSubmit={onSubmit}
@@ -53,10 +72,12 @@ export const CreateNewCarForm: FC<CreateNewCarFormProps> = ({
                 <input
                     type="text"
                     name="car_color"
+                    list="colors-list"
                     defaultValue={car?.car_color || ""}
                     required
                     className="w-full rounded-lg border-2 px-4 py-2"
                 />
+                {colorsList}
             </label>
             <label className="grid w-full place-items-start gap-2">
                 Year

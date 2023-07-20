@@ -13,7 +13,7 @@ interface DropDownProps {
 
 export const CreateOrEditDropDown: FC<DropDownProps> = ({
     onEdit,
-    onDelete,
+    onDelete
 }) => {
     const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -34,7 +34,10 @@ export const CreateOrEditDropDown: FC<DropDownProps> = ({
     };
 
     return (
-        <details ref={detailsRef} className="relative inline w-max">
+        <details
+            ref={detailsRef}
+            className="relative inline w-max"
+        >
             <summary className="flex h-8 w-8 cursor-pointer list-none items-center justify-center rounded-full bg-neutral-100 hover:bg-neutral-300">
                 <TfiMoreAlt className="text-2xl" />
             </summary>
