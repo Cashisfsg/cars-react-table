@@ -5,10 +5,11 @@ import { IoMdClose } from "react-icons/io";
 interface ModalProps {
     title: string;
     children: ReactNode;
+    onClose?: () => void;
 }
 
 export const Modal = forwardRef<HTMLDialogElement, ModalProps>(
-    ({ title, children, ...props }, ref) => {
+    ({ title, children, onClose, ...props }, ref) => {
         const dialogRef = useRef<HTMLDialogElement>(null);
 
         useImperativeHandle(
@@ -18,6 +19,7 @@ export const Modal = forwardRef<HTMLDialogElement, ModalProps>(
         );
 
         const closeModal = () => {
+            if (onClose) onClose();
             if (dialogRef.current) dialogRef.current.close();
         };
 
